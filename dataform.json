@@ -2,7 +2,7 @@
   "defaultSchema": "dataform",
   "assertionSchema": "dataform_assertions",
   "warehouse": "bigquery",
-  "defaultDatabase": "vivcity-205920",
+  "defaultDatabase": "vivacity-205920",
   "defaultLocation": "EU"
 }
     

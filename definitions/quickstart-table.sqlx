@@ -3,5 +3,7 @@ config {
 }
 
 SELECT
-  *
-FROM `dindins-club.analytics_321800234.events_20221111`
+  fruit,
+  SUM(count) as count
+FROM ${ref("quickstart-source")}
+GROUP BY 1
