@@ -1,0 +1,7 @@
+config {
+  type: "table"
+}
+
+SELECT
+  *
+FROM `dindins-club.analytics_321800234.events_20221111`
