@@ -1,8 +1,8 @@
 config {
-  type: "declaration",
+  type: "view",
   database: "dindins-club",
   schema: "analytics_321800234",
   name: "internal_views_ga4"
 }
 
-SELECT * FROM ${ref("events")}
+SELECT * FROM `dindins-club.analytics_321800234.events`
