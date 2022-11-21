@@ -1,6 +1,6 @@
 {
   "defaultSchema": "vivacity_ga_dev",
-  "assertionSchema": "dataform_assertions",
+  "assertionSchema": "vivacity_ga_dev_assertions",
   "warehouse": "bigquery",
   "defaultDatabase": "vivacity-205920",
   "defaultLocation": "EU"
