@@ -2,7 +2,7 @@
   "defaultSchema": "vivacity_ga_dev",
   "assertionSchema": "vivacity_ga_dev_assertions",
   "warehouse": "bigquery",
-  "defaultDatabase": "vivacity-205920",
+  "defaultDatabase": "vivcity-205920",
   "defaultLocation": "EU"
 }
     

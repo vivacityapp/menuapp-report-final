@@ -1,8 +1,5 @@
 config {
-  type: "view",
-  database: "dindins-club",
-  schema: "analytics_321800234",
-  name: "internal_views_ga4"
+    "type": "table"
 }
 
-SELECT * FROM `dindins-club.analytics_321800234.events`
+SELECT * FROM `dindins-club.analytics_321800234.events_20221204`
