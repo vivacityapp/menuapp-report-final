@@ -4,8 +4,8 @@ config {
 
 SELECT 
     user_pseudo_id,
-    countif(event_name = 'page_view') AS `page_view`,
-    e.value.string_value AS page_location,
+    event_name,
+    REGEXP_REPLACE(e.value.string_value, r'https://m.vivacityapp.com', '') AS page_location,
     geo.continent AS `geo_continent`, 
     geo.country AS `geo_country`, 
     geo.region AS `geo_region`,
@@ -14,7 +14,8 @@ SELECT
     geo.metro AS `geo_metro`,
     timestamp_micros(event_timestamp) as created_at,
 FROM `dindins-club.analytics_321800234.events_20221204`, UNNEST(event_params) AS e
-WHERE e.key= 'page_location'
+WHERE e.key= 'page_location' AND 
+event_name NOT IN ('session_start','screen_view','scroll','first_visit','exception','page_view')
 group by 
     user_pseudo_id,
     page_location,
@@ -25,8 +26,3 @@ group by
     geo_sub_continent,
     geo_metro,
     created_at
-
-
-
-
-
