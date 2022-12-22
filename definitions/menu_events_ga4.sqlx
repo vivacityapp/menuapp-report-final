@@ -2,8 +2,7 @@ config {
     "type": "table"
 }
 
-SELECT 
-    user_pseudo_id,
+SELECT
     event_name as `eventAction`,
     (select value.string_value from unnest(event_params) where key = 'event_label') as eventLabel,
     (select value.string_value from unnest(event_params) where key = 'event_category') as eventCategory,
@@ -16,7 +15,7 @@ SELECT
     geo.city AS `geo_city`, 
     geo.sub_continent AS `geo_sub_continent`, 
     geo.metro AS `geo_metro`,
-    DATETIME(timestamp_micros(event_timestamp),"Europe/London") as created_at,
+    DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),DAY) as `createdAt`,
     split(page_location, '/')[safe_offset(1)] AS rift_pagePath_rift1,
     split(page_location, '/')[safe_offset(2)] AS rift_pagePath_rift2,
     split(page_location, '/')[safe_offset(3)] AS rift_pagePath_rift3,
@@ -28,12 +27,11 @@ SELECT
 FROM 
 (SELECT * ,
 (select REGEXP_REPLACE(e.value.string_value,r'https://m.vivacityapp.com|https://inhouse.vivacityapp.com' , '') from unnest(event_params) as e where key = 'page_location') AS page_location
-FROM `dindins-club.analytics_321800234.events_20221217`)
-WHERE event_name NOT IN ('session_start','screen_view','scroll','first_visit','exception','page_view')
-group by 
-    user_pseudo_id,
+FROM `dindins-club.analytics_321800234.events_20221204`)
+WHERE event_name NOT IN ('session_start','screen_view','scroll','first_visit','exception','page_view','user_engagement')
+group by
+    pagePath,
     event_name,
-    page_location,
     geo_continent,
     eventLabel,
     eventCategory,
@@ -42,4 +40,4 @@ group by
     geo_city,
     geo_sub_continent,
     geo_metro,
-    created_at
+    createdAt
