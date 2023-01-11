@@ -6,41 +6,31 @@ SELECT
   user_pseudo_id as `_id`,
   count(event_name) as pageviews,
   (select 1) AS `uniquePageviews`,
-  page_location AS `pagePath`,
   traffic_source.medium as `medium`,
   traffic_source.source as `source`,
   device.language as `language`,
-  geo.continent AS `geo_continent`, 
-  geo.country AS `geo_country`, 
-  geo.region AS `geo_region`,
-  geo.city AS `geo_city`, 
-  geo.sub_continent AS `geo_sub_continent`, 
-  geo.metro AS `geo_metro`,
-  DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),DAY) as `createdAt`,
-  split(page_location, '/')[safe_offset(1)] AS rift_pagePath_rift1,
-  split(page_location, '/')[safe_offset(2)] AS rift_pagePath_rift2,
-  split(page_location, '/')[safe_offset(3)] AS rift_pagePath_rift3,
-  split(page_location, '/')[safe_offset(4)] AS rift_pagePath_rift4,
-  split(page_location, '/')[safe_offset(5)] AS rift_pagePath_rift5,
-  split(page_location, '/')[safe_offset(6)] AS rift_pagePath_rift6,
-  split(page_location, '/')[safe_offset(7)] AS rift_pagePath_rift7,
-  split(page_location, '/')[safe_offset(8)] AS rift_pagePath_rift8,
+  DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),minute) as `createdAt`,
+  page_location AS `pagePath`,
+  struct(
+    split(page_location, '/')[safe_offset(1)] AS rift1,
+    split(page_location, '/')[safe_offset(2)] AS rift2,
+    split(page_location, '/')[safe_offset(3)] AS rift3,
+    split(page_location, '/')[safe_offset(4)] AS rift4,
+    split(page_location, '/')[safe_offset(5)] AS rift5,
+    split(page_location, '/')[safe_offset(6)] AS rift6,
+    split(page_location, '/')[safe_offset(7)] AS rift7,
+    split(page_location, '/')[safe_offset(8)] AS rift8
+  ) AS rift_pagePath
 FROM 
 (SELECT * ,
-(select REGEXP_REPLACE(e.value.string_value,r'https://m.vivacityapp.com|https://inhouse.vivacityapp.com' , '') from unnest(event_params) as e where key = 'page_location') AS page_location
-FROM `dindins-club.analytics_321800234.events_20221204`)
+(select REGEXP_REPLACE(e.value.string_value,r'https://m.vivacityapp.com|https://inhouse.vivacityapp.com|^.*?dindins.club.*?$'  , '') from unnest(event_params) as e where key = 'page_location') AS page_location
+FROM `dindins-club.analytics_321800234.events_*`)
 WHERE event_name = 'page_view'
 group by
   user_pseudo_id,
-  pagePath,
   event_name,
-  geo_continent,
-  geo_country,
-  geo_region,
-  geo_city,
-  geo_sub_continent,
-  geo_metro,
   medium,
   source,
   language,
-  createdAt
+  createdAt,
+  pagePath
