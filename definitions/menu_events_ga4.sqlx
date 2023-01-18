@@ -1,0 +1,45 @@
+config {
+    "type": "table"
+}
+
+SELECT
+    event_name as `eventAction`,
+    (select value.string_value from unnest(event_params) where key = 'event_label') as eventLabel,
+    (select value.string_value from unnest(event_params) where key = 'event_category') as eventCategory,
+    count(event_name) AS `totalEvents`,
+    (select 1) AS `uniqueEvents`,
+    page_location AS `pagePath`,
+    geo.continent AS `geo_continent`, 
+    geo.country AS `geo_country`, 
+    geo.region AS `geo_region`,
+    geo.city AS `geo_city`, 
+    geo.sub_continent AS `geo_sub_continent`, 
+    geo.metro AS `geo_metro`,
+    DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),minute) as `createdAt`,
+    struct(
+        split(page_location, '/')[safe_offset(1)] AS rift1,
+        split(page_location, '/')[safe_offset(2)] AS rift2,
+        split(page_location, '/')[safe_offset(3)] AS rift3,
+        split(page_location, '/')[safe_offset(4)] AS rift4,
+        split(page_location, '/')[safe_offset(5)] AS rift5,
+        split(page_location, '/')[safe_offset(6)] AS rift6,
+        split(page_location, '/')[safe_offset(7)] AS rift7,
+        split(page_location, '/')[safe_offset(8)] AS rift8
+    ) AS rift_pagePath
+FROM 
+(SELECT * ,
+(select REGEXP_REPLACE(e.value.string_value,r'https://m.vivacityapp.com|https://inhouse.vivacityapp.com|^.*?dindins.club.*?$' , '') from unnest(event_params) as e where key = 'page_location') AS page_location
+FROM `dindins-club.analytics_321800234.events_*`)
+WHERE event_name NOT IN ('session_start','screen_view','scroll','first_visit','exception','page_view','user_engagement')
+group by
+    pagePath,
+    event_name,
+    geo_continent,
+    eventLabel,
+    eventCategory,
+    geo_country,
+    geo_region,
+    geo_city,
+    geo_sub_continent,
+    geo_metro,
+    createdAt
