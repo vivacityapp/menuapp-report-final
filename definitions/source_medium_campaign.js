@@ -17,7 +17,7 @@ publish(dataform.projectConfig.vars.ga4Table, {
         traffic_source.medium as medium,
         traffic_source.source as source,
         device.language as language,
-        "analytics_340662362" as qwe,
+        "${(dataform.projectConfig.vars.ga4Id)}" as ga4Id,
         DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),minute) as createdAt,
         page_location AS pagePath,
         struct(
