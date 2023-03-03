@@ -3,7 +3,7 @@
    // test //
 
 publish(dataform.projectConfig.vars.ga4Table, {
-    type: "table",
+    type: "incremental",
     
   })
 
