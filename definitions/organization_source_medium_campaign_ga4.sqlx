@@ -1,0 +1,73 @@
+config {
+    "type": "table"
+}
+
+js {
+  //var property_list = ["dindins-club.analytics_340662362.events_", "dindins-club.analytics_291016783.events_"]
+  const getCurrentDate = () => new Date().toISOString().slice(0, 10)
+  
+
+  var currentDate = getCurrentDate()
+
+  currentDate = currentDate.split('-').join("")
+
+  const table_name = "dindins-club.analytics_340662362.events_"
+
+  const tableName = table_name.concat(currentDate)
+
+}
+
+-- Define a list of table names
+{% set tableNames = ['table1', 'table2', 'table3'] %}
+
+-- Loop through the table names and execute a Dataform workflow for each table
+{% for tableName in tableNames %}
+    {{ run({
+        "datasets": ["my_dataset"],
+        "tasks": [{
+            "type": "table",
+            "name": "{{ tableName }}",
+            "tags": ["my_tag"],
+            "sql": "SELECT * FROM my_table"
+        }]
+    }) }}
+{% endfor %}
+
+
+
+SELECT
+  user_pseudo_id as `_id`,
+  count(event_name) as pageviews,
+  (select 1) AS `uniquePageviews`,
+  traffic_source.medium as `medium`,
+  traffic_source.source as `source`,
+  device.language as `language`,
+  DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),minute) as `createdAt`,
+  page_location AS `pagePath`,
+  struct(
+    split(page_location, '/')[safe_offset(1)] AS rift1,
+    split(page_location, '/')[safe_offset(2)] AS rift2,
+    split(page_location, '/')[safe_offset(3)] AS rift3,
+    split(page_location, '/')[safe_offset(4)] AS rift4,
+    split(page_location, '/')[safe_offset(5)] AS rift5,
+    split(page_location, '/')[safe_offset(6)] AS rift6,
+    split(page_location, '/')[safe_offset(7)] AS rift7,
+    split(page_location, '/')[safe_offset(8)] AS rift8
+  ) AS rift_pagePath
+FROM 
+(SELECT * ,
+(select REGEXP_REPLACE(e.value.string_value,r'https://m.vivacityapp.com|https://inhouse.vivacityapp.com|^.*?dindins.club.*?$'  , '') from unnest(event_params) as e where key = 'page_location') AS page_location
+FROM `dindins-club.analytics_321800234.events_*`)
+WHERE event_name = 'page_view'
+group by
+  user_pseudo_id,
+  event_name,
+  medium,
+  source,
+  language,
+  createdAt,
+  pagePath
+
+
+
+--dindins-club.analytics_340662362.events_20230226
