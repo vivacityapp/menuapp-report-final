@@ -4,12 +4,10 @@ config {
 
 SELECT
   user_pseudo_id as `_id`,
-  count(event_name) as pageviews,
-  (select 1) AS `uniquePageviews`,
   traffic_source.medium as `medium`,
   traffic_source.source as `source`,
   device.language as `language`,
-  DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),minute) as `createdAt`,
+  DATETIME_TRUNC(DATETIME(timestamp_micros(event_timestamp),"Europe/London"),hour) as `createdAt`,
   page_location AS `pagePath`,
   struct(
     split(page_location, '/')[safe_offset(1)] AS rift1,

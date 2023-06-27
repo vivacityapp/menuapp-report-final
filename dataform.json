@@ -1,12 +1,8 @@
 {
-  "defaultSchema": "vivacity_ga_dev",
-  "assertionSchema": "vivacity_ga_dev_assertions",
+  "defaultSchema": "vivacity_ga4",
+  "assertionSchema": "vivacity_ga4_assertions",
   "warehouse": "bigquery",
   "defaultDatabase": "vivcity-205920",
-  "defaultLocation": "EU",
-     "vars": {
-      "ga4Id": "340662362",
-      "ga4Table": "test3_source_medium_campaign"
-    }
+  "defaultLocation": "EU"
 }
     
