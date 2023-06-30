@@ -3,6 +3,7 @@ config {
 }
 
 SELECT
+  IFNULL(user_id, split(user_pseudo_id, '.')[safe_offset(0)]) as user_id,
   user_pseudo_id as `_id`,
   traffic_source.medium as `medium`,
   traffic_source.source as `source`,
