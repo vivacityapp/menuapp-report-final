@@ -26,6 +26,7 @@ FROM
 FROM `dindins-club.analytics_321800234.events_*`)
 WHERE event_name = 'page_view'
 group by
+  user_id,
   user_pseudo_id,
   event_name,
   medium,
